@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Media Pembelajaran Kebalikan Teorema Pythagoras</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        projectorBg: '#0f172a',
+                        projectorCard: '#1e293b',
+                        projectorText: '#f8fafc',
+                        projectorAccent: '#f59e0b'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        /* Custom Projector Mode Styles */
+        body.projector-mode {
+            background-color: #090d16 !important;
+            color: #ffffff !important;
+        }
+        body.projector-mode .bg-card-custom {
+            background-color: #162032 !important;
+            border: 2px solid #3b82f6 !important;
+            color: #ffffff !important;
+        }
+        body.projector-mode .text-muted-custom {
+            color: #cbd5e1 !important;
+        }
+        body.projector-mode input, body.projector-mode select {
+            background-color: #1e293b !important;
+            color: #ffffff !important;
+            border-color: #60a5fa !important;
+            font-weight: 700 !important;
+        }
+
+        .chip-status {
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            display: inline-block;
+        }
+        .chip-incomplete {
+            background-color: #fef3c7;
+            color: #d97706;
+        }
+        .chip-complete {
+            background-color: #d1fae5;
+            color: #059669;
+        }
+        .dark .chip-incomplete {
+            background-color: #78350f;
+            color: #fde68a;
+        }
+        .dark .chip-complete {
+            background-color: #064e3b;
+            color: #a7f3d0;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-slate-100 min-h-screen pb-12">
+
+    <!-- Header Section -->
+    <header class="bg-indigo-700 text-white dark:bg-indigo-900 shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex flex-wrap justify-between items-center gap-4">
+            <div>
+                <h1 class="text-xl md:text-2xl font-bold">Media Pembelajaran Interaktif</h1>
+                <p class="text-xs md:text-sm text-indigo-200">Eksplorasi Kebalikan Teorema Pythagoras</p>
+            </div>
+            <!-- Mode Toggles -->
+            <div class="flex items-center space-x-2">
+                <button id="btnDarkMode" onclick="toggleDarkMode()" class="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 dark:bg-indigo-800 dark:hover:bg-indigo-700 text-xs md:text-sm font-semibold transition flex items-center gap-1.5 border border-indigo-400/30">
+                    <span id="darkModeIcon">🌙</span> <span id="darkModeText">Mode Gelap</span>
+                </button>
+                <button id="btnProjectorMode" onclick="toggleProjectorMode()" class="px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-900 text-xs md:text-sm font-bold transition flex items-center gap-1.5 border border-amber-300">
+                    📺 <span id="projectorModeText">Mode Proyektor</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 mt-6 space-y-8">
+
+        <!-- Grid Top: Input & Visualisasi -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+            <!-- Panel Kiri: Control Input & Sampel Cepat (5 cols) -->
+            <div class="lg:col-span-5 space-y-6">
+                <!-- Card Input Panjang Sisi -->
+                <div class="bg-white dark:bg-slate-800 bg-card-custom p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
+                    <h2 class="text-lg font-bold text-indigo-600 dark:text-indigo-400 mb-3 flex items-center gap-2">
+                        <span>📏</span> Pengaturan Panjang Sisi
+                    </h2>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 text-muted-custom mb-4">Masukkan tiga panjang sisi segitiga (dapat berupa pecahan/desimal):</p>
+
+                    <div class="space-y-4">
+                        <!-- Input Sisi 1 -->
+                        <div>
+                            <div class="flex justify-between items-center mb-1">
+                                <label for="inputA" class="text-sm font-semibold">Sisi Pertengahan/Pertama (a):</label>
+                                <input type="number" id="inputA" step="any" min="0.1" value="3" oninput="handleInputBoxChange()" class="w-24 px-2 py-1 text-right font-bold rounded-md border border-slate-300 dark:border-slate-600 dark:bg-slate-700 focus:ring-2 focus:ring-indigo-500 outline-none">
+                            </div>
+                            <input type="range" id="sliderA" step="0.1" min="0.1" value="3" oninput="handleSliderChange('A')" class="w-full accent-indigo-600">
+                        </div>
+
+                        <!-- Input Sisi 2 -->
+                        <div>
+                            <div class="flex justify-between items-center mb-1">
+                                <label for="inputB" class="text-sm font-semibold">Sisi Kedua (b):</label>
+                                <input type="number" id="inputB" step="any" min="0.1" value="4" oninput="handleInputBoxChange()" class="w-24 px-2 py-1 text-right font-bold rounded-md border border-slate-300 dark:border-slate-600 dark:bg-slate-700 focus:ring-2 focus:ring-indigo-500 outline-none">
+                            </div>
+                            <input type="range" id="sliderB" step="0.1" min="0.1" value="4" oninput="handleSliderChange('B')" class="w-full accent-indigo-600">
+                        </div>
+
+                        <!-- Input Sisi 3 -->
+                        <div>
+                            <div class="flex justify-between items-center mb-1">
+                                <label for="inputC" class="text-sm font-semibold">Sisi Ketiga (c):</label>
+                                <input type="number" id="inputC" step="any" min="0.1" value="5" oninput="handleInputBoxChange()" class="w-24 px-2 py-1 text-right font-bold rounded-md border border-slate-300 dark:border-slate-600 dark:bg-slate-700 focus:ring-2 focus:ring-indigo-500 outline-none">
+                            </div>
+                            <input type="range" id="sliderC" step="0.1" min="0.1" value="5" oninput="handleSliderChange('C')" class="w-full accent-indigo-600">
+                        </div>
+                    </div>
+
+                    <!-- Pesan Error Input Validation -->
+                    <div id="validationMessage" class="mt-3 text-xs font-semibold text-rose-500 dark:text-rose-400 hidden"></div>
+                </div>
+
+                <!-- Card Uji Cepat Contoh -->
+                <div class="bg-white dark:bg-slate-800 bg-card-custom p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
+                    <h3 class="text-sm font-bold text-slate-700 dark:text-slate-200 mb-3 flex items-center gap-2">
+                        <span>⚡</span> Uji Cepat Contoh
+                    </h3>
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="setExample(3, 4, 5)" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300 dark:hover:bg-indigo-900 border border-indigo-200 dark:border-indigo-800 transition">3, 4, 5</button>
+                        <button onclick="setExample(4, 5, 7)" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300 dark:hover:bg-amber-900 border border-amber-200 dark:border-amber-800 transition">4, 5, 7</button>
+                        <button onclick="setExample(5, 6, 7)" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-teal-50 hover:bg-teal-100 text-teal-700 dark:bg-teal-950 dark:text-teal-300 dark:hover:bg-teal-900 border border-teal-200 dark:border-teal-800 transition">5, 6, 7</button>
+                        <button onclick="setExample(6, 8, 10)" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300 dark:hover:bg-indigo-900 border border-indigo-200 dark:border-indigo-800 transition">6, 8, 10</button>
+                        <button onclick="setExample(5, 12, 13)" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300 dark:hover:bg-indigo-900 border border-indigo-200 dark:border-indigo-800 transition">5, 12, 13</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel Kanan: Visualisasi Segitiga SVG & Perhitungan (7 cols) -->
+            <div class="lg:col-span-7 space-y-6">
+                <!-- Container Visualisasi SVG -->
+                <div class="bg-white dark:bg-slate-800 bg-card-custom p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 flex flex-col items-center">
+                    <div class="w-full flex justify-between items-center mb-2">
+                        <h2 class="text-base font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+                            <span>📐</span> Diagram Segitiga Real-Time
+                        </h2>
+                        <span id="badgeLongestSide" class="text-xs px-2.5 py-1 rounded-md bg-slate-100 dark:bg-slate-700 font-semibold text-slate-600 dark:text-slate-300">
+                            Sisi terpanjang (c) = 5
+                        </span>
+                    </div>
+
+                    <!-- SVG Canvas -->
+                    <div class="w-full h-64 md:h-80 bg-slate-50 dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-700/60 p-2 flex items-center justify-center relative overflow-hidden">
+                        <svg id="triangleSvg" class="w-full h-full" viewBox="0 0 500 350" preserveAspectRatio="xMidYMid meet">
+                            <!-- Rendered by JavaScript -->
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Panel Perhitungan Langsung -->
+                <div class="bg-white dark:bg-slate-800 bg-card-custom p-5 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
+                    <h2 class="text-base font-bold text-slate-800 dark:text-slate-100 mb-3 flex items-center gap-2">
+                        <span>📊</span> Perhitungan Langsung
+                    </h2>
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+                        <div class="p-3 bg-slate-50 dark:bg-slate-700/50 rounded-xl border border-slate-200/60 dark:border-slate-600/40">
+                            <span class="text-xs text-slate-500 dark:text-slate-400 block font-medium">a² + b²</span>
+                            <span id="calcA2B2" class="text-lg font-extrabold text-indigo-600 dark:text-indigo-400">25</span>
+                        </div>
+                        <div class="p-3 bg-slate-50 dark:bg-slate-700/50 rounded-xl border border-slate-200/60 dark:border-slate-600/40">
+                            <span class="text-xs text-slate-500 dark:text-slate-400 block font-medium">c² (Sisi Terpanjang)</span>
+                            <span id="calcC2" class="text-lg font-extrabold text-amber-600 dark:text-amber-400">25</span>
+                        </div>
+                        <div class="p-3 bg-slate-50 dark:bg-slate-700/50 rounded-xl border border-slate-200/60 dark:border-slate-600/40 col-span-2 md:col-span-1">
+                            <span class="text-xs text-slate-500 dark:text-slate-400 block font-medium">Sudut Terbesar</span>
+                            <span id="calcAngle" class="text-lg font-extrabold text-emerald-600 dark:text-emerald-400">90,0°</span>
+                        </div>
+                    </div>
+
+                    <div id="calcComparisonBox" class="mt-4 p-3 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 text-center font-bold text-indigo-900 dark:text-indigo-200 text-sm">
+                        c² = a² + b² &nbsp; (25 = 25)
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION: MISI EKSPLORASI -->
+        <section class="bg-white dark:bg-slate-800 bg-card-custom p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 space-y-6">
+            <div class="flex flex-wrap justify-between items-center gap-3">
+                <div>
+                    <h2 class="text-xl font-bold text-indigo-600 dark:text-indigo-400 flex items-center gap-2">
+                        <span>🎯</span> Misi Eksplorasi
+                    </h2>
+                    <p class="text-xs md:text-sm text-slate-500 dark:text-slate-400 text-muted-custom">Atur nilai sisi di atas, lalu gunakan tombol di bawah untuk memeriksa dan menyelesaikan misi.</p>
+                </div>
+
+                <!-- Tombol Cek & Catat -->
+                <button onclick="cekMisiDanCatat()" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-md hover:shadow-indigo-500/20 active:scale-95 transition flex items-center gap-2 text-sm">
+                    <span>🔍</span> Cek & Catat
+                </button>
+            </div>
+
+            <!-- Pesan Feedback Global Misi -->
+            <div id="missionGlobalFeedback" class="hidden p-3 rounded-xl text-sm font-semibold transition"></div>
+
+            <!-- List Misi (Grid 2x2 or 1x4) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                
+                <!-- Misi 1 -->
+                <div id="cardMisi1" class="p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900/30 flex justify-between items-start gap-3">
+                    <div class="space-y-1">
+                        <h3 class="font-bold text-slate-800 dark:text-slate-100 text-sm">Misi 1 Cari yang Sama</h3>
+                        <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                            Temukan 3 kombinasi sisi yang membuat c² sama dengan a² + b². Berapa sudut terbesarnya?
+                        </p>
+                    </div>
+                    <span id="chipMisi1" class="chip-status chip-incomplete shrink-0">0/3</span>
+                </div>
+
+                <!-- Misi 2 -->
+                <div id="cardMisi2" class="p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900/30 flex justify-between items-start gap-3">
+                    <div class="space-y-1">
+                        <h3 class="font-bold text-slate-800 dark:text-slate-100 text-sm">Misi 2 Cari yang Lebih Besar</h3>
+                        <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                            Temukan 3 kombinasi sisi yang membuat c² lebih besar dari a² + b². Apa yang terjadi pada sudut terbesarnya?
+                        </p>
+                    </div>
+                    <span id="chipMisi2" class="chip-status chip-incomplete shrink-0">0/3</span>
+                </div>
+
+                <!-- Misi 3 -->
+                <div id="cardMisi3" class="p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900/30 flex justify-between items-start gap-3">
+                    <div class="space-y-1">
+                        <h3 class="font-bold text-slate-800 dark:text-slate-100 text-sm">Misi 3 Cari yang Lebih Kecil</h3>
+                        <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                            Temukan 3 kombinasi sisi yang membuat c² lebih kecil dari a² + b². Apa yang terjadi pada sudut terbesarnya?
+                        </p>
+                    </div>
+                    <span id="chipMisi3" class="chip-status chip-incomplete shrink-0">0/3</span>
+                </div>
+
+                <!-- Misi 4 -->
+                <div id="cardMisi4" class="p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900/30 flex justify-between items-start gap-3">
+                    <div class="space-y-2 w-full">
+                        <div class="flex justify-between items-start gap-2">
+                            <h3 class="font-bold text-slate-800 dark:text-slate-100 text-sm">Misi 4 Tebak dari Sisinya</h3>
+                            <span id="chipMisi4" class="chip-status chip-incomplete shrink-0">Belum</span>
+                        </div>
+                        <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                            Pilih tiga sisi, hitung c² dan a² + b² dulu, tebak jenis segitiganya, lalu periksa sudut terbesarnya.
+                        </p>
+                        
+                        <!-- Radio Options for Mission 4 -->
+                        <div class="pt-2 flex flex-wrap items-center gap-3 text-xs font-semibold">
+                            <span class="text-slate-500 dark:text-slate-400">Tebakanmu:</span>
+                            <label class="flex items-center gap-1 cursor-pointer hover:text-indigo-600">
+                                <input type="radio" name="misi4Guess" value="Siku-siku" class="accent-indigo-600"> Siku-siku
+                            </label>
+                            <label class="flex items-center gap-1 cursor-pointer hover:text-indigo-600">
+                                <input type="radio" name="misi4Guess" value="Lancip" class="accent-indigo-600"> Lancip
+                            </label>
+                            <label class="flex items-center gap-1 cursor-pointer hover:text-indigo-600">
+                                <input type="radio" name="misi4Guess" value="Tumpul" class="accent-indigo-600"> Tumpul
+                            </label>
+                        </div>
+                        <div id="misi4Feedback" class="text-xs font-bold hidden mt-1"></div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SECTION: TABEL PENCATATAN DATA -->
+        <section class="bg-white dark:bg-slate-800 bg-card-custom p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 space-y-4">
+            <div class="flex justify-between items-center flex-wrap gap-2">
+                <h2 class="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+                    <span>📋</span> Tabel Pencatatan Data
+                </h2>
+                <button onclick="clearDataTable()" class="text-xs font-medium text-slate-500 hover:text-rose-600 dark:text-slate-400 dark:hover:text-rose-400 transition">
+                    Hapus Tabel
+                </button>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse text-xs md:text-sm">
+                    <thead>
+                        <tr class="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 text-slate-600 dark:text-slate-300">
+                            <th class="p-2.5 font-bold">No</th>
+                            <th class="p-2.5 font-bold">Sisi (a, b, c)</th>
+                            <th class="p-2.5 font-bold">a² + b²</th>
+                            <th class="p-2.5 font-bold">c²</th>
+                            <th class="p-2.5 font-bold">Hubungan (c² vs a²+b²)</th>
+                            <th class="p-2.5 font-bold">Sudut Terbesar</th>
+                            <th class="p-2.5 font-bold">Jenis Segitiga</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dataTableBody" class="divide-y divide-slate-100 dark:divide-slate-700/50">
+                        <!-- Dynamic Rows -->
+                        <tr id="emptyRow" class="text-slate-400 dark:text-slate-500 italic">
+                            <td colspan="7" class="p-4 text-center">Belum ada data dicatat. Klik "Cek & Catat" saat bereksplorasi.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- SECTION: PERTANYAAN PEMANDU & UJI DUGAANMU -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Pertanyaan Pemandu -->
+            <div class="bg-white dark:bg-slate-800 bg-card-custom p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 space-y-4">
+                <h2 class="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+                    <span>💡</span> Pertanyaan Pemandu
+                </h2>
+                <div class="space-y-3 text-xs md:text-sm">
+                    <details class="p-3 bg-slate-50 dark:bg-slate-900/40 rounded-xl border border-slate-200/80 dark:border-slate-700 cursor-pointer">
+                        <summary class="font-bold text-indigo-600 dark:text-indigo-400">Apa hubungan nilai c² dengan a² + b² saat sudut terbesarnya 90°?</summary>
+                        <p class="mt-2 text-slate-600 dark:text-slate-300 leading-relaxed">
+                            Bandingkan kolom $a^2 + b^2$ dan $c^2$ pada Tabel Pencatatan Data saat sudut bernilai persis $90.0^\circ$. Nilai keduanya selalu persis sama.
+                        </p>
+                    </details>
+                    <details class="p-3 bg-slate-50 dark:bg-slate-900/40 rounded-xl border border-slate-200/80 dark:border-slate-700 cursor-pointer">
+                        <summary class="font-bold text-indigo-600 dark:text-indigo-400">Apa yang terjadi pada sudut terbesar jika c² > a² + b²?</summary>
+                        <p class="mt-2 text-slate-600 dark:text-slate-300 leading-relaxed">
+                            Sudut terbesarnya akan menjadi lebih besar dari $90^\circ$ (membentuk sudut tumpul).
+                        </p>
+                    </details>
+                    <details class="p-3 bg-slate-50 dark:bg-slate-900/40 rounded-xl border border-slate-200/80 dark:border-slate-700 cursor-pointer">
+                        <summary class="font-bold text-indigo-600 dark:text-indigo-400">Apa yang terjadi pada sudut terbesar jika c² < a² + b²?</summary>
+                        <p class="mt-2 text-slate-600 dark:text-slate-300 leading-relaxed">
+                            Sudut terbesarnya akan menjadi lebih kecil dari $90^\circ$ (ketiga sudutnya lancip).
+                        </p>
+                    </details>
+                </div>
+            </div>
+
+            <!-- Kartu Misteri & Uji Dugaanmu -->
+            <div class="bg-white dark:bg-slate-800 bg-card-custom p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 space-y-4">
+                <h2 class="text-lg font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+                    <span>🔮</span> Kartu Misteri (Uji Dugaanmu)
+                </h2>
+                <p class="text-xs text-slate-500 dark:text-slate-400">Uji pemahamanmu sebelum memasukkan nilainya ke diagram:</p>
+                
+                <div class="space-y-3">
+                    <div class="p-3 bg-slate-50 dark:bg-slate-900/40 rounded-xl border border-slate-200/80 dark:border-slate-700 flex justify-between items-center">
+                        <span class="font-bold text-xs md:text-sm">Segitiga P: (7, 24, 25)</span>
+                        <button onclick="setExample(7, 24, 25)" class="px-3 py-1 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-lg transition">Uji Sisi Ini</button>
+                    </div>
+                    <div class="p-3 bg-slate-50 dark:bg-slate-900/40 rounded-xl border border-slate-200/80 dark:border-slate-700 flex justify-between items-center">
+                        <span class="font-bold text-xs md:text-sm">Segitiga Q: (8, 10, 12)</span>
+                        <button onclick="setExample(8, 10, 12)" class="px-3 py-1 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-lg transition">Uji Sisi Ini</button>
+                    </div>
+                    <div class="p-3 bg-slate-50 dark:bg-slate-900/40 rounded-xl border border-slate-200/80 dark:border-slate-700 flex justify-between items-center">
+                        <span class="font-bold text-xs md:text-sm">Segitiga R: (6, 7, 8)</span>
+                        <button onclick="setExample(6, 7, 8)" class="px-3 py-1 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-lg transition">Uji Sisi Ini</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION: BAGIAN GURU (STATEMENT FORMAL) -->
+        <section class="bg-indigo-50 dark:bg-slate-800/80 bg-card-custom p-6 rounded-2xl border border-indigo-200 dark:border-slate-700 space-y-3">
+            <details class="cursor-pointer">
+                <summary class="font-bold text-indigo-900 dark:text-indigo-300 text-sm md:text-base flex items-center gap-2">
+                    <span>👩‍🏫</span> Bagian Guru: Pernyataan Formal Kebalikan Teorema Pythagoras
+                </summary>
+                <div class="mt-4 pt-3 border-t border-indigo-200 dark:border-slate-700 text-xs md:text-sm text-slate-700 dark:text-slate-300 leading-relaxed space-y-2">
+                    <p><b>Catatan Pedagogis:</b> Pembelajaran diawali dengan membandingkan nilai kuadrat $c^2$ dan $a^2+b^2$ serta mengamati besarnya sudut terbesar, sebelum siswa menyimpulkan teorema secara formal.</p>
+                    <div class="p-4 bg-white dark:bg-slate-900 rounded-xl border border-indigo-100 dark:border-slate-800 space-y-1.5 font-medium">
+                        <p>Diberikan segitiga dengan panjang sisi $a, b,$ dan $c$, dengan $c$ adalah sisi terpanjang:</p>
+                        <ul class="list-disc list-inside space-y-1 pl-2">
+                            <li>Jika $c^2 = a^2 + b^2$, maka segitiga tersebut adalah <b>Segitiga Siku-siku</b> (sudut terbesar = $90^\circ$).</li>
+                            <li>Jika $c^2 > a^2 + b^2$, maka segitiga tersebut adalah <b>Segitiga Tumpul</b> (sudut terbesar > $90^\circ$).</li>
+                            <li>Jika $c^2 < a^2 + b^2$, maka segitiga tersebut adalah <b>Segitiga Lancip</b> (sudut terbesar < $90^\circ$).</li>
+                        </ul>
+                    </div>
+                </div>
+            </details>
+        </section>
+
+    </main>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // State Global
+        let misi1Combos = [];
+        let misi2Combos = [];
+        let misi3Combos = [];
+        let misi4Done = false;
+        let recordedTableKeys = [];
+        let isDarkMode = false;
+        let isProjectorMode = false;
+
+        // On Load
+        window.onload = function() {
+            updateAll();
+        };
+
+        // Dark Mode Toggle
+        function toggleDarkMode() {
+            isDarkMode = !isDarkMode;
+            document.documentElement.classList.toggle('dark', isDarkMode);
+            document.getElementById('darkModeText').textContent = isDarkMode ? 'Mode Terang' : 'Mode Gelap';
+            document.getElementById('darkModeIcon').textContent = isDarkMode ? '☀️' : '🌙';
+            updateTriangleSvg();
+        }
+
+        // Projector Mode Toggle
+        function toggleProjectorMode() {
+            isProjectorMode = !isProjectorMode;
+            document.body.classList.toggle('projector-mode', isProjectorMode);
+            document.getElementById('projectorModeText').textContent = isProjectorMode ? 'Mode Normal' : 'Mode Proyektor';
+            updateTriangleSvg();
+        }
+
+        // Parse Helper Input Number
+        function getInputValue(id) {
+            let valStr = document.getElementById(id).value.toString().replace(',', '.');
+            return parseFloat(valStr);
+        }
+
+        // Handler Input Box Change
+        function handleInputBoxChange() {
+            let valA = getInputValue('inputA');
+            let valB = getInputValue('inputB');
+            let valC = getInputValue('inputC');
+
+            // Sync Sliders without strict clamping
+            if (!isNaN(valA)) syncSlider('sliderA', valA);
+            if (!isNaN(valB)) syncSlider('sliderB', valB);
+            if (!isNaN(valC)) syncSlider('sliderC', valC);
+
+            updateAll();
+        }
+
+        // Handler Slider Change
+        function handleSliderChange(letter) {
+            let sliderVal = parseFloat(document.getElementById('slider' + letter).value);
+            document.getElementById('input' + letter).value = sliderVal;
+            updateAll();
+        }
+
+        function syncSlider(sliderId, val) {
+            let slider = document.getElementById(sliderId);
+            let currentMax = parseFloat(slider.max);
+            if (val > currentMax) {
+                slider.max = Math.max(15, val * 1.5);
+            }
+            slider.value = val;
+        }
+
+        function setExample(a, b, c) {
+            document.getElementById('inputA').value = a;
+            document.getElementById('inputB').value = b;
+            document.getElementById('inputC').value = c;
+            syncSlider('sliderA', a);
+            syncSlider('sliderB', b);
+            syncSlider('sliderC', c);
+            updateAll();
+        }
+
+        // Central Update Function
+        function updateAll() {
+            let valA = getInputValue('inputA');
+            let valB = getInputValue('inputB');
+            let valC = getInputValue('inputC');
+
+            let validationMsg = document.getElementById('validationMessage');
+            
+            // Check non-empty & > 0
+            if (isNaN(valA) || isNaN(valB) || isNaN(valC) || valA <= 0 || valB <= 0 || valC <= 0) {
+                validationMsg.textContent = "Isi dengan angka lebih dari 0";
+                validationMsg.classList.remove('hidden');
+                clearTriangleSvg();
+                return;
+            }
+
+            // Sort to identify longest side c
+            let arr = [valA, valB, valC].sort((x, y) => x - y);
+            let a = arr[0], b = arr[1], c = arr[2];
+
+            // Check triangle inequality
+            if (a + b <= c + 0.000001) {
+                validationMsg.textContent = "Tidak dapat membentuk segitiga: jumlah 2 sisi terpendek harus lebih besar dari sisi terpanjang.";
+                validationMsg.classList.remove('hidden');
+                clearTriangleSvg();
+                return;
+            }
+
+            validationMsg.classList.add('hidden');
+
+            // Adjust sliders max dynamically
+            let maxSide = Math.max(valA, valB, valC);
+            let newMaxSlider = Math.max(15, maxSide * 1.5);
+            ['sliderA', 'sliderB', 'sliderC'].forEach(sId => {
+                document.getElementById(sId).max = newMaxSlider;
+            });
+
+            // Update Longest side badge
+            document.getElementById('badgeLongestSide').textContent = `Sisi terpanjang (c) = ${c}`;
+
+            // Calculate Math
+            let a2b2 = (a * a) + (b * b);
+            let c2 = c * c;
+            
+            // Largest angle calculation (law of cosines)
+            let cosC = (a * a + b * b - c * c) / (2 * a * b);
+            // Clamp for float precision boundaries
+            cosC = Math.max(-1, Math.min(1, cosC));
+            let angleRad = Math.acos(cosC);
+            let angleDeg = angleRad * (180 / Math.PI);
+
+            // Update Panel Calculations
+            document.getElementById('calcA2B2').textContent = formatNum(a2b2);
+            document.getElementById('calcC2').textContent = formatNum(c2);
+            document.getElementById('calcAngle').textContent = angleDeg.toFixed(1).replace('.', ',') + "°";
+
+            let compBox = document.getElementById('calcComparisonBox');
+            let tol = 0.000001;
+            let diff = c2 - a2b2;
+
+            if (Math.abs(diff) < tol) {
+                compBox.textContent = `c² = a² + b²   (${formatNum(c2)} = ${formatNum(a2b2)})`;
+            } else if (diff > tol) {
+                compBox.textContent = `c² > a² + b²   (${formatNum(c2)} > ${formatNum(a2b2)})`;
+            } else {
+                compBox.textContent = `c² < a² + b²   (${formatNum(c2)} < ${formatNum(a2b2)})`;
+            }
+
+            // Redraw SVG Triangle with side c at bottom, vertex C at top
+            drawTriangleSvg(a, b, c, angleDeg);
+        }
+
+        function formatNum(n) {
+            if (Number.isInteger(n)) return n.toString();
+            return parseFloat(n.toFixed(2)).toString().replace('.', ',');
+        }
+
+        // SVG Drawing Function - Segment AB is side c at bottom, Vertex C at top opposite to side c
+        function drawTriangleSvg(a, b, c, angleC) {
+            let svg = document.getElementById('triangleSvg');
+            svg.innerHTML = '';
+
+            // Segment AB is side c at bottom: A = (0,0), B = (c,0)
+            // Vertex C position: x = b * cos(A), y = b * sin(A) where A is angle at vertex A
+            let cosA = (b * b + c * c - a * a) / (2 * b * c);
+            cosA = Math.max(-1, Math.min(1, cosA));
+            let sinA = Math.sin(Math.acos(cosA));
+
+            let x1 = 0, y1 = 0;               // Vertex A
+            let x2 = c, y2 = 0;               // Vertex B
+            let x3 = b * cosA, y3 = b * sinA; // Vertex C (top)
+
+            // Bounding box calculation
+            let minX = Math.min(x1, x2, x3);
+            let maxX = Math.max(x1, x2, x3);
+            let minY = 0;
+            let maxY = Math.max(0, y3);
+
+            let w = maxX - minX;
+            let h = maxY - minY;
+
+            // Padding inside viewBox 500x350
+            let pad = 60;
+            let scaleX = (500 - 2 * pad) / (w || 1);
+            let scaleY = (350 - 2 * pad) / (h || 1);
+            let scale = Math.min(scaleX, scaleY);
+
+            // Center offsets
+            let offsetX = pad + ((500 - 2 * pad) - w * scale) / 2;
+            let offsetY = 350 - pad - ((350 - 2 * pad) - h * scale) / 2;
+
+            function tx(x) { return offsetX + (x - minX) * scale; }
+            function ty(y) { return offsetY - y * scale; }
+
+            let pA = { x: tx(x1), y: ty(y1) };
+            let pB = { x: tx(x2), y: ty(y2) };
+            let pC = { x: tx(x3), y: ty(y3) };
+
+            // Theme colors for SVG
+            let strokeColor = isProjectorMode ? '#38bdf8' : (isDarkMode ? '#818cf8' : '#4f46e5');
+            let fillColor = isProjectorMode ? 'rgba(56, 189, 248, 0.15)' : (isDarkMode ? 'rgba(99, 102, 241, 0.2)' : 'rgba(79, 70, 229, 0.1)');
+            let textColor = isProjectorMode ? '#ffffff' : (isDarkMode ? '#f1f5f9' : '#1e293b');
+
+            // Draw Triangle Polygon
+            let polygon = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+            polygon.setAttribute('points', `${pA.x},${pA.y} ${pB.x},${pB.y} ${pC.x},${pC.y}`);
+            polygon.setAttribute('fill', fillColor);
+            polygon.setAttribute('stroke', strokeColor);
+            polygon.setAttribute('stroke-width', '3');
+            polygon.setAttribute('stroke-linejoin', 'round');
+            svg.appendChild(polygon);
+
+            // Unit vectors from C to A and C to B
+            let vCA = { x: pA.x - pC.x, y: pA.y - pC.y };
+            let lenCA = Math.hypot(vCA.x, vCA.y) || 1;
+            let uCA = { x: vCA.x / lenCA, y: vCA.y / lenCA };
+
+            let vCB = { x: pB.x - pC.x, y: pB.y - pC.y };
+            let lenCB = Math.hypot(vCB.x, vCB.y) || 1;
+            let uCB = { x: vCB.x / lenCB, y: vCB.y / lenCB };
+
+            let isRightAngle = Math.abs((c * c) - (a * a + b * b)) < 0.000001;
+
+            if (isRightAngle) {
+                // Square right-angle marker directly at Vertex C facing side c
+                let s = 18;
+                let q1 = { x: pC.x + s * uCA.x, y: pC.y + s * uCA.y };
+                let q2 = { x: pC.x + s * (uCA.x + uCB.x), y: pC.y + s * (uCA.y + uCB.y) };
+                let q3 = { x: pC.x + s * uCB.x, y: pC.y + s * uCB.y };
+
+                let sq = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+                sq.setAttribute('points', `${q1.x},${q1.y} ${q2.x},${q2.y} ${q3.x},${q3.y}`);
+                sq.setAttribute('fill', 'none');
+                sq.setAttribute('stroke', '#f59e0b');
+                sq.setAttribute('stroke-width', '2.5');
+                svg.appendChild(sq);
+            } else {
+                // Dashed arc for acute / obtuse angle at Vertex C
+                let r = 22;
+                let arc1 = { x: pC.x + r * uCA.x, y: pC.y + r * uCA.y };
+                let arc2 = { x: pC.x + r * uCB.x, y: pC.y + r * uCB.y };
+
+                let cross = uCA.x * uCB.y - uCA.y * uCB.x;
+                let sweep = cross > 0 ? 1 : 0;
+
+                let arcPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                arcPath.setAttribute('d', `M ${arc1.x} ${arc1.y} A ${r} ${r} 0 0 ${sweep} ${arc2.x} ${arc2.y}`);
+                arcPath.setAttribute('fill', 'none');
+                arcPath.setAttribute('stroke', '#f59e0b');
+                arcPath.setAttribute('stroke-width', '2.5');
+                arcPath.setAttribute('stroke-dasharray', '3,2');
+                svg.appendChild(arcPath);
+            }
+
+            // Labels for side lengths
+            // Side c (bottom segment AB)
+            drawLabel(svg, (pA.x + pB.x) / 2, pA.y + 22, `c = ${formatNum(c)}`, textColor, 'bold');
+            // Side b (left segment AC)
+            drawLabel(svg, (pA.x + pC.x) / 2 - 18, (pA.y + pC.y) / 2, `b = ${formatNum(b)}`, textColor, 'bold');
+            // Side a (right segment BC)
+            drawLabel(svg, (pB.x + pC.x) / 2 + 18, (pB.y + pC.y) / 2, `a = ${formatNum(a)}`, textColor, 'bold');
+
+            // Vertex labels & angle indicator text at Vertex C
+            drawLabel(svg, pC.x, pC.y - 20, `C (${angleC.toFixed(1).replace('.', ',')}°)`, '#f59e0b', 'bold');
+            drawLabel(svg, pA.x - 14, pA.y + 12, 'A', textColor, 'bold');
+            drawLabel(svg, pB.x + 14, pB.y + 12, 'B', textColor, 'bold');
+        }
+
+        function clearTriangleSvg() {
+            let svg = document.getElementById('triangleSvg');
+            svg.innerHTML = '';
+        }
+
+        function drawLabel(svg, x, y, text, color, fontWeight='500') {
+            let txt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            txt.setAttribute('x', x);
+            txt.setAttribute('y', y);
+            txt.setAttribute('fill', color);
+            txt.setAttribute('font-size', '12');
+            txt.setAttribute('font-weight', fontWeight);
+            txt.setAttribute('text-anchor', 'middle');
+            txt.textContent = text;
+            svg.appendChild(txt);
+        }
+
+        // Helper Combo Key Normalizer (Order Independent)
+        function getComboKey(s1, s2, s3) {
+            return [s1, s2, s3].sort((x, y) => x - y).map(n => parseFloat(n.toFixed(6))).join(',');
+        }
+
+        // Core Mission Logic & Record Trigger
+        function cekMisiDanCatat() {
+            let valA = getInputValue('inputA');
+            let valB = getInputValue('inputB');
+            let valC = getInputValue('inputC');
+
+            let feedbackElem = document.getElementById('missionGlobalFeedback');
+
+            if (isNaN(valA) || isNaN(valB) || isNaN(valC) || valA <= 0 || valB <= 0 || valC <= 0) {
+                showGlobalFeedback("Isi semua panjang sisi dengan angka lebih dari 0 sebelum mengecek.", "amber");
+                return;
+            }
+
+            let arr = [valA, valB, valC].sort((x, y) => x - y);
+            let a = arr[0], b = arr[1], c = arr[2];
+
+            if (a + b <= c + 0.000001) {
+                showGlobalFeedback("Sisi-sisi ini tidak membentuk segitiga yang valid.", "amber");
+                return;
+            }
+
+            let a2b2 = (a * a) + (b * b);
+            let c2 = c * c;
+            let comboKey = getComboKey(a, b, c);
+            let tol = 0.000001;
+            let diff = c2 - a2b2;
+
+            let isSama = Math.abs(diff) < tol;
+            let isLebihBesar = diff > tol;
+            let isLebihKecil = diff < -tol;
+
+            let jenisSebenarnya = isSama ? "Siku-siku" : (isLebihBesar ? "Tumpul" : "Lancip");
+
+            let logMsg = [];
+
+            // Evaluasi Misi 1
+            if (isSama) {
+                if (!misi1Combos.includes(comboKey) && misi1Combos.length < 3) {
+                    misi1Combos.push(comboKey);
+                    updateChip('chipMisi1', misi1Combos.length === 3 ? "Selesai" : `${misi1Combos.length}/3`, misi1Combos.length === 3);
+                    logMsg.push("Misi 1 terhitung (+1)");
+                    catatKeTabel(a, b, c, a2b2, c2, "c² = a² + b²", jenisSebenarnya);
+                } else if (misi1Combos.includes(comboKey)) {
+                    logMsg.push("Misi 1: Kombinasi sisi ini sudah pernah ditemukan.");
+                }
+            }
+
+            // Evaluasi Misi 2
+            if (isLebihBesar) {
+                if (!misi2Combos.includes(comboKey) && misi2Combos.length < 3) {
+                    misi2Combos.push(comboKey);
+                    updateChip('chipMisi2', misi2Combos.length === 3 ? "Selesai" : `${misi2Combos.length}/3`, misi2Combos.length === 3);
+                    logMsg.push("Misi 2 terhitung (+1)");
+                    catatKeTabel(a, b, c, a2b2, c2, "c² > a² + b²", jenisSebenarnya);
+                } else if (misi2Combos.includes(comboKey)) {
+                    logMsg.push("Misi 2: Kombinasi sisi ini sudah pernah ditemukan.");
+                }
+            }
+
+            // Evaluasi Misi 3
+            if (isLebihKecil) {
+                if (!misi3Combos.includes(comboKey) && misi3Combos.length < 3) {
+                    misi3Combos.push(comboKey);
+                    updateChip('chipMisi3', misi3Combos.length === 3 ? "Selesai" : `${misi3Combos.length}/3`, misi3Combos.length === 3);
+                    logMsg.push("Misi 3 terhitung (+1)");
+                    catatKeTabel(a, b, c, a2b2, c2, "c² < a² + b²", jenisSebenarnya);
+                } else if (misi3Combos.includes(comboKey)) {
+                    logMsg.push("Misi 3: Kombinasi sisi ini sudah pernah ditemukan.");
+                }
+            }
+
+            // Evaluasi Misi 4
+            let selectedGuessElem = document.querySelector('input[name="misi4Guess"]:checked');
+            let misi4FeedbackElem = document.getElementById('misi4Feedback');
+            
+            if (selectedGuessElem) {
+                let userGuess = selectedGuessElem.value;
+                if (userGuess === jenisSebenarnya) {
+                    misi4FeedbackElem.textContent = "Tebakanmu benar!";
+                    misi4FeedbackElem.className = "text-xs font-bold mt-1 text-emerald-600 dark:text-emerald-400";
+                    if (!misi4Done) {
+                        misi4Done = true;
+                        updateChip('chipMisi4', "Selesai", true);
+                        logMsg.push("Misi 4 Selesai!");
+                        let rel = isSama ? "c² = a² + b²" : (isLebihBesar ? "c² > a² + b²" : "c² < a² + b²");
+                        catatKeTabel(a, b, c, a2b2, c2, rel, jenisSebenarnya);
+                    }
+                } else {
+                    misi4FeedbackElem.textContent = "Tebakanmu belum tepat, bandingkan lagi c² dengan a² + b²";
+                    misi4FeedbackElem.className = "text-xs font-bold mt-1 text-rose-600 dark:text-rose-400";
+                }
+                misi4FeedbackElem.classList.remove('hidden');
+            } else if (!misi4Done) {
+                misi4FeedbackElem.textContent = "Pilih tebakanmu sebelum mengecek!";
+                misi4FeedbackElem.className = "text-xs font-bold mt-1 text-amber-600 dark:text-amber-400";
+                misi4FeedbackElem.classList.remove('hidden');
+            }
+
+            // Display Feedback Toast/Box
+            if (logMsg.length > 0) {
+                showGlobalFeedback(logMsg.join(" | "), "emerald");
+            } else {
+                showGlobalFeedback(`Sudah dicek. Hasil perbandingan c² dengan a² + b² telah diamati.`, "indigo");
+            }
+        }
+
+        function updateChip(chipId, text, isComplete) {
+            let chip = document.getElementById(chipId);
+            chip.textContent = text;
+            if (isComplete) {
+                chip.className = "chip-status chip-complete shrink-0";
+            } else {
+                chip.className = "chip-status chip-incomplete shrink-0";
+            }
+        }
+
+        function showGlobalFeedback(msg, colorType) {
+            let fb = document.getElementById('missionGlobalFeedback');
+            fb.textContent = msg;
+            fb.classList.remove('hidden');
+            
+            if (colorType === 'emerald') {
+                fb.className = "p-3 rounded-xl text-xs md:text-sm font-semibold transition bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-200 border border-emerald-300 dark:border-emerald-800";
+            } else if (colorType === 'amber') {
+                fb.className = "p-3 rounded-xl text-xs md:text-sm font-semibold transition bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-200 border border-amber-300 dark:border-amber-800";
+            } else {
+                fb.className = "p-3 rounded-xl text-xs md:text-sm font-semibold transition bg-indigo-100 text-indigo-800 dark:bg-indigo-950 dark:text-indigo-200 border border-indigo-300 dark:border-indigo-800";
+            }
+        }
+
+        // Data Table Logic
+        function catatKeTabel(a, b, c, a2b2, c2, rel, jenis) {
+            let comboKey = getComboKey(a, b, c);
+            if (recordedTableKeys.includes(comboKey)) return; // Prevent duplicate rows
+
+            recordedTableKeys.push(comboKey);
+
+            let emptyRow = document.getElementById('emptyRow');
+            if (emptyRow) emptyRow.classList.add('hidden');
+
+            let tbody = document.getElementById('dataTableBody');
+            let tr = document.createElement('tr');
+            tr.className = "hover:bg-slate-50 dark:hover:bg-slate-700/30 text-slate-700 dark:text-slate-200 transition";
+
+            // Calculate largest angle
+            let cosC = (a * a + b * b - c * c) / (2 * a * b);
+            cosC = Math.max(-1, Math.min(1, cosC));
+            let angleDeg = Math.acos(cosC) * (180 / Math.PI);
+
+            tr.innerHTML = `
+                <td class="p-2.5 font-bold">${recordedTableKeys.length}</td>
+                <td class="p-2.5 font-semibold">${formatNum(a)}, ${formatNum(b)}, ${formatNum(c)}</td>
+                <td class="p-2.5 font-semibold text-indigo-600 dark:text-indigo-400">${formatNum(a2b2)}</td>
+                <td class="p-2.5 font-semibold text-amber-600 dark:text-amber-400">${formatNum(c2)}</td>
+                <td class="p-2.5 font-bold">${rel}</td>
+                <td class="p-2.5 font-semibold">${angleDeg.toFixed(1).replace('.', ',')}°</td>
+                <td class="p-2.5 font-bold">${jenis}</td>
+            `;
+
+            tbody.appendChild(tr);
+        }
+
+        function clearDataTable() {
+            recordedTableKeys = [];
+            let tbody = document.getElementById('dataTableBody');
+            tbody.innerHTML = `
+                <tr id="emptyRow" class="text-slate-400 dark:text-slate-500 italic">
+                    <td colspan="7" class="p-4 text-center">Belum ada data dicatat. Klik "Cek & Catat" saat bereksplorasi.</td>
+                </tr>
+            `;
+        }
+    </script>
+</body>
+</html>
